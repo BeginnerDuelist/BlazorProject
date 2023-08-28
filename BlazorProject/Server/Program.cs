@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<BlazorProjectAPIDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("BlazorProjectAPIDbContext") ?? throw new InvalidOperationException("Connection string 'BlazorProjectAPIDbContext' not found.")));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaulConnection"))); 
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
