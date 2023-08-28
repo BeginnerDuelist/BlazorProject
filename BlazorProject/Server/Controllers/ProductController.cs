@@ -12,41 +12,31 @@ namespace BlazorProject.Server.Controllers
      [Route("api/[controller]")]
      [ApiController]
      public class ProductController : ControllerBase
-     {
+     { 
+          private readonly IProductService _productService;
           private readonly BlazorProjectAPIDbContext _context;
 
-          public ProductController(BlazorProjectAPIDbContext context)
+          public ProductController(IProductService productService, BlazorProjectAPIDbContext context)
           {
+               
+               _productService = productService;
                _context = context;
           }
 
           // GET: api/Product
           [HttpGet]
-          public async Task<ActionResult<IEnumerable<Product>>> GetProduct()
+          public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProduct()
           {
-               if (_context.Product == null)
-               {
-                    return NotFound();
-               }
-               return await _context.Product.ToListAsync();
+               var result = await _productService.GetProductsAsync();
+               return Ok(result);
           }
 
           // GET: api/Product/5
           [HttpGet("{id}")]
           public async Task<ActionResult<Product>> GetProduct(int id)
           {
-               if (_context.Product == null)
-               {
-                    return NotFound();
-               }
-               var product = await _context.Product.FindAsync(id);
-
-               if (product == null)
-               {
-                    return NotFound();
-               }
-
-               return product;
+               var result = await _productService.GetProductAsync(id);
+               return Ok(result);
           }
 
           // PUT: api/Product/5
