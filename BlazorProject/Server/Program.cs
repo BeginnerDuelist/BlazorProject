@@ -1,4 +1,5 @@
 global using BlazorProject.Shared;
+global using BlazorProject.Server.Services.ProductService;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -11,6 +12,8 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<BlazorProjectAPIDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaulConnection"))); 
+
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
