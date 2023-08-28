@@ -13,10 +13,18 @@ namespace BlazorProject.Server.Services.ProductService
 
           public async Task<ServiceResponse<Product>> GetProductAsync(int id)
           {
-               var response = new ServiceResponse<Product>()
+               var response = new ServiceResponse<Product>();
+               var product = await _context.Product.FindAsync(id);
+               if (product == null)
                {
-                    Data = await _context.Product.FindAsync(id)
-               };
+                    response.Success = false;
+                    response.Message = "Sorry Product not found!!!";
+               }
+               else
+               {
+                    response.Data = product;
+                    response.Message = "We found your product";
+               }
                return response;
           }
 
@@ -25,6 +33,7 @@ namespace BlazorProject.Server.Services.ProductService
                var response = new ServiceResponse<List<Product>>()
                {
                     Data = await _context.Product.ToListAsync()
+                    
                };
                return response;
           }
