@@ -12,8 +12,11 @@ builder.Services.AddRazorPages();
 builder.Services.AddDbContext<BlazorProjectAPIDbContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("BlazorProjectAPIDbContext") ?? throw new InvalidOperationException("Connection string 'BlazorProjectAPIDbContext' not found.")));
 
-var app = builder.Build();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
+var app = builder.Build();
+app.UseSwaggerUI();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
@@ -26,6 +29,8 @@ else
      app.UseHsts();
 }
 
+
+app.UseSwagger();
 app.UseHttpsRedirection();
 
 app.UseBlazorFrameworkFiles();
