@@ -39,6 +39,26 @@ namespace BlazorProject.Server.Controllers
                return Ok(result);
           }
 
+          [HttpPost]
+          public async Task<ActionResult<Product>> AddProduct(Product product)
+          {
+               var result = await _productService.AddProductAsync(product);
+               return Ok(result);
+          }
+
+          [HttpDelete("{id}")]
+          public async Task<ActionResult<Product>> DeleteProduct(int id)
+          {
+               var result=await _productService.DeleteProductAsync(id);
+               return Ok(result);
+          }
+
+          [HttpPut("{id}")]
+          public async Task<ActionResult> UpdateProduct(int id,Product product)
+          {
+               var result = await _productService.UpdateProductAsync(id, product);
+               return Ok(result);
+          }
          
      }
 }
