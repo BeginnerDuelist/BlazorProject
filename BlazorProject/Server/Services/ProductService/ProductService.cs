@@ -1,4 +1,5 @@
 ﻿
+using BlazorProject.Server.DTO.Product_DTO;
 using Microsoft.EntityFrameworkCore;
 
 namespace BlazorProject.Server.Services.ProductService
@@ -12,13 +13,22 @@ namespace BlazorProject.Server.Services.ProductService
                _context = context;
           }
 
-          public async Task<ServiceResponse<Product>> AddProductAsync(Product product)
+          public async Task<ServiceResponse<Product>> AddProductAsync(CreateProductDTO product)
           {
-               _context.Product.Add(product);
+               var newProduct = new Product()
+               {
+                    Id = product.Id,
+                    Title = product.Title,
+                    Description = product.Description,
+                    ImageUrl = product.ImageUrl,
+                    Price = product.Price,
+                    CategoryId = product.CategoryId
+               };
+               _context.Product.Add(newProduct);
                await _context.SaveChangesAsync();
                var response = new ServiceResponse<Product>()
                {
-                    Data = product,
+                    Data = newProduct,
                     Message = "Added product"
                };
                return response;
@@ -88,25 +98,29 @@ namespace BlazorProject.Server.Services.ProductService
                return _context.Product.Any(e => e.Id == id);
           }
 
-          public async Task<ServiceResponse<Product>> UpdateProductAsync(int id, Product product)
+          public async Task<ServiceResponse<Product>> UpdateProductAsync(int id, UpdateProductDTO product)
           {
+               var prod = await _context.Product.FindAsync(id);
                var response = new ServiceResponse<Product>();
-               if (id != product.Id)
+               if (prod == null)
                {
                     response.Success = false;
                     response.Message = "Product not found";
                     response.Data = null!;
                     return response;
                }
-
-               _context.Entry(product).State = EntityState.Modified;
+               prod.Title = product.Title;
+               prod.Description = product.Description;
+               prod.ImageUrl = product.ImageUrl;
+               prod.Price = product.Price;
+               prod.CategoryId = product.CategoryId;
 
                try
                {
                     await _context.SaveChangesAsync();
                     response.Success = true;
                     response.Message = "Product updated succesful";
-                    response.Data = product;
+                    response.Data = prod;
                     return response;
                }
                catch (DbUpdateConcurrencyException)
