@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlazorProject.Shared;
+using BlazorProject.Server.DTO.Product_DTO;
 
 namespace BlazorProject.Server.Controllers
 {
@@ -47,7 +48,7 @@ namespace BlazorProject.Server.Controllers
           }
 
           [HttpPost]
-          public async Task<ActionResult<Product>> AddProduct(Product product)
+          public async Task<ActionResult<Product>> AddProduct(CreateProductDTO product)
           {
                var result = await _productService.AddProductAsync(product);
                return Ok(result);
@@ -61,7 +62,7 @@ namespace BlazorProject.Server.Controllers
           }
 
           [HttpPut("{id}")]
-          public async Task<ActionResult> UpdateProduct(int id,Product product)
+          public async Task<ActionResult> UpdateProduct(int id,UpdateProductDTO product)
           {
                var result = await _productService.UpdateProductAsync(id, product);
                return Ok(result);
