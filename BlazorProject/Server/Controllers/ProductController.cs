@@ -39,6 +39,13 @@ namespace BlazorProject.Server.Controllers
                return Ok(result);
           }
 
+          [HttpGet("category/{categoryURL}")]
+          public async Task<ActionResult<Product>> GetProductsbyCategory(string categoryURL)
+          {
+               var result = await _productService.GetProductByCategory(categoryURL);
+               return Ok(result);
+          }
+
           [HttpPost]
           public async Task<ActionResult<Product>> AddProduct(Product product)
           {
