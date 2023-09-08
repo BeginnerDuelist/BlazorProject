@@ -2,11 +2,11 @@
 {
      public interface ICategoryService
      {
-          Task<ServiceResponse<List<Category>>> GetCategorysAsync();
-          Task<ServiceResponse<Category>> GetCategoryAsync(int id);
-          Task<ServiceResponse<Category>> AddCategoryAsync(Category category);
-          Task<ServiceResponse<Category>> UpdateCategoryAsync(int id, Category category);
-          Task<ServiceResponse<Category>> DeleteCategoryAsync(int id);
-          bool CategoryExists(int id);
+          Task<ServiceModel<Category>> GetCategorysAsync();
+          Task<ServiceModel<Category>> GetCategoryAsync(int id);
+          Task<ServiceModel<Category>> AddCategoryAsync(Category newCategory);
+          Task<ServiceModel<Category>> UpdateCategoryAsync(Category newCategory);
+          Task<ServiceModel<Category>> DeleteCategoryAsync(int id);
+          
      }
 }
