@@ -26,29 +26,29 @@ namespace BlazorProject.Server.Controllers
 
           // GET: api/Product
           [HttpGet]
-          public async Task<ActionResult<ServiceResponse<List<Product>>>> GetProduct()
+          public async Task<ActionResult<ServiceModel<List<Product>>>> GetProduct()
           {
                var result = await _productService.GetProductsAsync();
                return Ok(result);
           }
 
           // GET: api/Product/5
-          [HttpGet("{id}")]
+          [HttpGet("Get-Product/{id:int}")]
           public async Task<ActionResult<Product>> GetProduct(int id)
           {
                var result = await _productService.GetProductAsync(id);
                return Ok(result);
           }
 
-          [HttpGet("category/{categoryURL}")]
-          public async Task<ActionResult<Product>> GetProductsbyCategory(string categoryURL)
+          [HttpGet("category/{url}")]
+          public async Task<ActionResult<Product>> GetProductsbyCategory(string url)
           {
-               var result = await _productService.GetProductByCategory(categoryURL);
+               var result = await _productService.GetProductsByCategory(url);
                return Ok(result);
           }
 
-          [HttpPost]
-          public async Task<ActionResult<Product>> AddProduct(CreateProductDTO product)
+          [HttpPost("Add-Product")]
+          public async Task<ActionResult<Product>> AddProduct(Product product)
           {
                var result = await _productService.AddProductAsync(product);
                return Ok(result);
@@ -57,14 +57,14 @@ namespace BlazorProject.Server.Controllers
           [HttpDelete("{id}")]
           public async Task<ActionResult<Product>> DeleteProduct(int id)
           {
-               var result=await _productService.DeleteProductAsync(id);
+               var result = await _productService.DeleteProductAsync(id);
                return Ok(result);
           }
 
-          [HttpPut("{id}")]
-          public async Task<ActionResult> UpdateProduct(int id,UpdateProductDTO product)
+          [HttpPut]
+          public async Task<ActionResult> UpdateProduct(Product product)
           {
-               var result = await _productService.UpdateProductAsync(id, product);
+               var result = await _productService.UpdateProductAsync(product);
                return Ok(result);
           }
          

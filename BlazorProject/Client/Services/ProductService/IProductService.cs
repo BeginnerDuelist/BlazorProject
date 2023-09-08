@@ -4,9 +4,11 @@ namespace BlazorProject.Client.Services.ProductService
 {
      public interface IProductService
      {
-          event Action ProductsChanged;
-          List<Product> Products { get; set; }
-          Task GetProducts(string? categoryURL = null!);
-          Task<ServiceResponse<Product>> GetProduct(int id);
+          public Task<ServiceModel<Product>?> AddProduct(Product NewProduct);
+          public Task<ServiceModel<Product>?> UpdateProduct(Product NewProduct);
+          public Task<ServiceModel<Product>?> GetProducts();
+          public Task<ServiceModel<Product>?> GetProduct(int ProductId);
+          public Task<ServiceModel<Product>?> DeleteProduct(int ProductId);
+          public Task<ServiceModel<Product>?> GetProductbyCategory(string url);
      }
 }
