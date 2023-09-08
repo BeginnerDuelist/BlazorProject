@@ -13,8 +13,11 @@ namespace BlazorProject.Shared
           public string Description { get; set; } = string.Empty;
           public string ImageUrl { get; set; } = string.Empty;
           public decimal Price { get; set; }
+          public decimal NewPrice {  get; set; }
+          public int Quantity { get; set; }
           public Category? Category { get; set; }
           public int CategoryId { get; set; }
+          public DateTime UploadedDate { get; set; } = DateTime.UtcNow;
 
      }
 }
