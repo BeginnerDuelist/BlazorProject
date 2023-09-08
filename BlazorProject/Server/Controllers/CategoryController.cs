@@ -17,7 +17,7 @@ namespace BlazorProject.Server.Controllers
 
           // GET: api/Product
           [HttpGet]
-          public async Task<ActionResult<ServiceResponse<List<Category>>>> GetCategorys()
+          public async Task<ActionResult<ServiceModel<List<Category>>>> GetCategorys()
           {
                var result = await _categoryService.GetCategorysAsync();
                return Ok(result);
@@ -45,10 +45,10 @@ namespace BlazorProject.Server.Controllers
                return Ok(result);
           }
 
-          [HttpPut("{id}")]
-          public async Task<ActionResult> UpdateCategory(int id, Category category)
+          [HttpPut]
+          public async Task<ActionResult> UpdateCategory(Category category)
           {
-               var result = await _categoryService.UpdateCategoryAsync(id, category);
+               var result = await _categoryService.UpdateCategoryAsync(category);
                return Ok(result);
           }
      }

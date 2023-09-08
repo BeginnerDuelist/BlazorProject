@@ -1,37 +1,51 @@
 ﻿using BlazorProject.Shared;
 using System.Net.Http.Json;
+using System.Net.Http;
 
 
 namespace BlazorProject.Client.Services.ProductService
 {
      public class ProductService : IProductService
      {
-          private readonly HttpClient _http;
-
-          public ProductService(HttpClient http)
+          private readonly HttpClient httpClient;
+          public ProductService(HttpClient httpClient)
           {
-               _http = http;
+               this.httpClient = httpClient;
           }
-          public List<Product> Products { get; set; } = new List<Product>();
-
-          public event Action ProductsChanged;
-
-          public async Task<ServiceResponse<Product>> GetProduct(int id)
+          public async Task<ServiceModel<Product>?> AddProduct(Product NewProduct)
           {
-               var result = await _http.GetFromJsonAsync<ServiceResponse<Product>>($"api/Product/{id}");
+               var product = await httpClient.PostAsJsonAsync("api/Product/Add-Product", NewProduct);
+               return await product.Content.ReadFromJsonAsync<ServiceModel<Product>>();
+          }
+
+          public async Task<ServiceModel<Product>?> GetProduct(int ProductId)
+          {
+               var result = await httpClient.GetAsync($"api/Product/Get-Product/{ProductId}");
+               return await result.Content.ReadFromJsonAsync<ServiceModel<Product>>();
+          }
+
+          public async Task<ServiceModel<Product>?> GetProductbyCategory(string url)
+          {
+               var result = await httpClient.GetAsync($"api/Product/category/{url}");
+               return await result.Content.ReadFromJsonAsync<ServiceModel<Product>>();
+          }
+
+          public async Task<ServiceModel<Product>?> GetProducts()
+          {
+               var result = await httpClient.GetAsync("api/Product");
+               return await result.Content.ReadFromJsonAsync<ServiceModel<Product>>();
+          }
+
+          public async Task<ServiceModel<Product>?> UpdateProduct(Product NewProduct)
+          {
+               var result = await httpClient.PutAsJsonAsync("api/Product", NewProduct);
+               return await result.Content.ReadFromJsonAsync<ServiceModel<Product>>();
+          }
+
+          public async Task<ServiceModel<Product>?> DeleteProduct(int ProductId)
+          {
+               var result = await httpClient.DeleteFromJsonAsync<ServiceModel<Product>>($"api/Product/{ProductId}");
                return result;
-          }
-
-          public async Task GetProducts(string? categoryURL = null!)
-          {
-               var result = categoryURL == null ? 
-                    await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>("api/Product"):
-                    await _http.GetFromJsonAsync<ServiceResponse<List<Product>>>($"api/Product/Category/{categoryURL}");
-
-               if(result != null && result.Data != null)
-                    Products = result.Data;
-
-               ProductsChanged.Invoke();
           }
      }
 }

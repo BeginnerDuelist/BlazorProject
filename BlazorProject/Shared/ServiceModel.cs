@@ -6,10 +6,13 @@ using System.Threading.Tasks;
 
 namespace BlazorProject.Shared
 {
-     public class ServiceResponse<T>
+     public class ServiceModel<T>
      {
-          public T  Data { get; set; }
+          public List<T>? MultipleData { get; set; }
+          public T?  Data { get; set; }
           public bool Success { get; set; } = true;
           public string Message { get; set; }=string.Empty;
+          public string? CssClass { get; set; } = "success";
+
      }
 }

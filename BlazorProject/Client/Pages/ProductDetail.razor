@@ -1,46 +1,98 @@
-﻿@page "/Product/{id:int}"
-@inject IProductService ProductService
+﻿﻿
+@page "/productDetails/{id:int}"
+@inject IProductService productService
 
-@if(product==null)
+@if (serviceModel.Data != null)
 {
-     <span>@message</span>
+    <div class="row">
+        <div class="row sticky-top mb-1">
+            <div class="col-md-12 mt-1"><h3 class="text-muted" style="font-family:'Javanese Text'">Product</h3></div>
+        </div>
+        <hr />
+        <div class="col-md-6 offset-3">
+            <div class="card border-1 m-2 mb-2">
+
+                <div class="form-group mt-2">
+                    <div class="alert alert-@CssClass">@Message</div>
+                </div>
+                <div class="card-header text-center">
+                    <img class="card-img-top" src="@serviceModel.Data.ImageUrl" style="width:350px; height:300px" />
+                    @if (DateTime.Now < serviceModel.Data.UploadedDate.AddDays(30))
+                    {
+                        <span class="badge bg-info position-absolute top-0 start-100 translate-middle badge rounded-pill">New</span>
+                    }
+                </div>
+                <div class="card-body ">
+                    <p>
+                        <h5 class="text-primary text-center">@serviceModel.Data.Title </h5>&nbsp; &nbsp;
+                        <br />
+                        <span class="text-secondary text-muted fs-6">@serviceModel.Data.Description</span><br>
+                        @if (serviceModel.Data.NewPrice != 0 && serviceModel.Data.NewPrice < serviceModel.Data.Price)
+                        {
+                            <span class="text-danger text-decoration-line-through" style="font-size:16px;"><i>MDL @serviceModel.Data.Price</i></span>
+                            <span>&nbsp; &nbsp;</span>
+                            <span class="badge bg-primary badge rounded-end bg-danger">Reduced</span>
+                            <br />
+                                   <span class="text-primary text-center" style="font-size:16px;"><i>MDL @serviceModel.Data.NewPrice</i></span>
+                        }
+                        else
+                        {
+                                   <span class="text-danger" style="font-size:16px;"><i>MDL @serviceModel.Data.Price</i></span>
+                        }
+                              <h6 class="text-muted">In Stock: @serviceModel.Data.Quantity</h6>
+                        <input type="number" @bind="Quantity" min="1" class="form-control w-25"></input>
+                    </p>
+                </div>
+                <div class="card-footer bg-white">
+                         <button class="btn btn-outline-danger btn-sm" @onclick="async ()=> await AddProductToCart(serviceModel.Data.Id)">
+                        <i class="oi oi-cart fs-5"></i>
+                        Add to cart
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 else
 {
-     <div class="media">
-          <div class="media-img-wrapper">
-               <img class="media-img" src="@product.ImageUrl" alt="@product.Title">
-          </div>
-          <div class="media-body">
-               <h2 class="mb-0">@product.Title</h2>
-               <p>@product.Description</p>
-               <h4 class="price">
-                    MDL @product.Price
-               </h4>
-          </div>
-     </div>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-3 mb-5">
+                <div class="d-flex justify-content-center mt-5">
+                    <div class="spinner-border text-danger" role="status" style="width: 5rem; height: 5rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 }
 
+
+
 @code {
-     private Product? product = null;
-     private string message=string.Empty; 
-     [Parameter]
-     public int Id{ get; set;}
+    [Parameter] public int Id { get; set; }
+    private int Quantity = 1;
+    private string? Message = string.Empty;
+    private string? CssClass = string.Empty;
+    public ServiceModel<Product> serviceModel = new ServiceModel<Product>();
 
-     protected override async Task OnParametersSetAsync()
-     {
-          message = "Loading Product ...";
+    protected override async Task OnParametersSetAsync() => await GetProducts();
 
-          var result = await ProductService.GetProduct(Id);
-          if(!result.Success)
-          {
-               message = result.Message;
-          }
-          else
-          {
-               product = result.Data;
-          }
-          
+    private async Task GetProducts() => serviceModel = await productService.GetProduct(Id);
 
-     }
+    private async Task AddProductToCart(int ProductId)
+    {
+        Message = "";
+        CssClass = "";
+        if (Quantity >= 1 && Quantity <= serviceModel.Data!.Quantity)
+        {
+
+        }
+        else
+        {
+            Message = "Invalid quantity provided";
+            CssClass = "warning";
+        }
+    }
 }
