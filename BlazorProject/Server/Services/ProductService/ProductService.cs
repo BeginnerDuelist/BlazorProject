@@ -1,137 +1,225 @@
 ﻿
 using BlazorProject.Server.DTO.Product_DTO;
 using Microsoft.EntityFrameworkCore;
+using System.Security.Policy;
 
 namespace BlazorProject.Server.Services.ProductService
 {
      public class ProductService : IProductService
      {
-          private readonly BlazorProjectAPIDbContext _context;
+          private readonly BlazorProjectAPIDbContext appDbContext;
 
-          public ProductService(BlazorProjectAPIDbContext context)
+          public ProductService(BlazorProjectAPIDbContext appDbContext)
           {
-               _context = context;
+               this.appDbContext = appDbContext;
           }
 
-          public async Task<ServiceResponse<Product>> AddProductAsync(CreateProductDTO product)
+          public async Task<ServiceModel<Product>> AddProductAsync(Product NewProduct)
           {
-               var newProduct = new Product()
+               var Response = new ServiceModel<Product>();
+               if (NewProduct != null)
                {
-                    Id = product.Id,
-                    Title = product.Title,
-                    Description = product.Description,
-                    ImageUrl = product.ImageUrl,
-                    Price = product.Price,
-                    CategoryId = product.CategoryId
-               };
-               _context.Product.Add(newProduct);
-               await _context.SaveChangesAsync();
-               var response = new ServiceResponse<Product>()
-               {
-                    Data = newProduct,
-                    Message = "Added product"
-               };
-               return response;
-          }
-
-          public async Task<ServiceResponse<Product>> DeleteProductAsync(int id)
-          {
-               var response = new ServiceResponse<Product>();
-               var product = await _context.Product.FindAsync(id);
-               if (product == null)
-               {
-                    response.Success = false;
-                    response.Message = "Sorry Product not found!!!";
+                    try
+                    {
+                         appDbContext.Product.Add(NewProduct);
+                         await appDbContext.SaveChangesAsync();
+                         Response.Data = NewProduct;
+                         Response.Success = true;
+                         Response.Message = "Product added successfully!";
+                         Response.CssClass = "success";
+                         return Response;
+                    }
+                    catch (Exception exMessage)
+                    {
+                         Response.CssClass = "danger";
+                         Response.Message = exMessage.Message.ToString();
+                         return Response;
+                    }
                }
                else
                {
-                    _context.Product.Remove(product);
-                    await _context.SaveChangesAsync();
-                    response.Data = null!;
-                    response.Message = "We deleted the product";
+                    Response.Success = false;
+                    Response.Message = "Sorry New product object is empty!";
+                    Response.CssClass = "warning";
+                    Response.Data = null!;
+                    return Response;
                }
-
-               return response;
-
           }
 
-          public async Task<ServiceResponse<Product>> GetProductAsync(int id)
+          public async Task<ServiceModel<Product>> DeleteProductAsync(int id)
           {
-               var response = new ServiceResponse<Product>();
-               var product = await _context.Product.FindAsync(id);
-               if (product == null)
+               var response = new ServiceModel<Product>();
+               var product = await GetProductAsync(id);
+               if (product.Data != null)
                {
-                    response.Success = false;
-                    response.Message = "Sorry Product not found!!!";
+                    appDbContext.Product.Remove(product.Data);
+                    await appDbContext.SaveChangesAsync();
+                    response.Message = "Product deleted!";
+                    response.CssClass = "success fw-bold";
+                    response.Data = product.Data;
+                    var products = await GetProductsAsync();
+                    response.MultipleData = products.MultipleData;
                }
                else
                {
-                    response.Data = product;
-                    response.Message = "We found your product";
+                    response.Message = product.Message;
+                    response.CssClass = product.CssClass;
                }
                return response;
+
           }
 
-          public async Task<ServiceResponse<List<Product>>> GetProductByCategory(string categoryURL)
+          public async Task<ServiceModel<Product>> GetProductAsync(int id)
           {
-               var response = new ServiceResponse<List<Product>>
+               var Response = new ServiceModel<Product>();
+               if (id > 0)
                {
-                    Data = await _context.Product
-                              .Where(p => p.Category.Url.ToLower()== categoryURL.ToLower())
-                              .ToListAsync()
-               };
-               return response;
-          }
+                    try
+                    {
+                         var product = await appDbContext.Product.SingleOrDefaultAsync(p => p.Id == id);
+                         if (product != null)
+                         {
+                              Response.Data = product;
+                              Response.Success = true;
+                              Response.Message = "Product found!";
+                              Response.CssClass = "success";
+                              return Response;
+                         }
+                         else
+                         {
+                              Response.Success = false;
+                              Response.Message = "Sorry product you are looking for doesn't exist!";
+                              Response.CssClass = "danger";
+                              Response.Data = null!;
+                              return Response;
+                         }
 
-          public async Task<ServiceResponse<List<Product>>> GetProductsAsync()
-          {
-               var response = new ServiceResponse<List<Product>>()
-               {
-                    Data = await _context.Product.ToListAsync()
-
-               };
-               return response;
-          }
-
-          public bool ProductExists(int id)
-          {
-               return _context.Product.Any(e => e.Id == id);
-          }
-
-          public async Task<ServiceResponse<Product>> UpdateProductAsync(int id, UpdateProductDTO product)
-          {
-               var prod = await _context.Product.FindAsync(id);
-               var response = new ServiceResponse<Product>();
-               if (prod == null)
-               {
-                    response.Success = false;
-                    response.Message = "Product not found";
-                    response.Data = null!;
-                    return response;
+                    }
+                    catch (Exception exMessage)
+                    {
+                         Response.CssClass = "danger";
+                         Response.Message = exMessage.Message.ToString();
+                         return Response;
+                    }
                }
-               prod.Title = product.Title;
-               prod.Description = product.Description;
-               prod.ImageUrl = product.ImageUrl;
-               prod.Price = product.Price;
-               prod.CategoryId = product.CategoryId;
+               else
+               {
+                    Response.Success = false;
+                    Response.Message = "Sorry New product object is empty!";
+                    Response.CssClass = "warning";
+                    Response.Data = null!;
+                    return Response;
+               }
+          }
 
+          public async Task<ServiceModel<Product>> GetProductsByCategory(string url)
+          {
+               var Response = new ServiceModel<Product>();
+               if (url != null)
+               {
+                    try
+                    {
+                         var product = await appDbContext.Product
+                             .Where(p => p.Category!.Url == url.ToLower().Replace(" ", "-")).ToListAsync();
+                         if (product != null)
+                         {
+                              Response.MultipleData = product;
+                              Response.Success = true;
+                              Response.Message = "Product found!";
+                              Response.CssClass = "success";
+                              return Response;
+                         }
+                         else
+                         {
+                              Response.Success = false;
+                              Response.Message = "Sorry product you are looking for doesn't exist!";
+                              Response.CssClass = "danger";
+                              Response.Data = null!;
+                              return Response;
+                         }
+
+                    }
+                    catch (Exception exMessage)
+                    {
+                         Response.CssClass = "danger";
+                         Response.Message = exMessage.Message.ToString();
+                         return Response;
+                    }
+               }
+               else
+               {
+                    Response.Success = false;
+                    Response.Message = "Sorry New product object is empty!";
+                    Response.CssClass = "warning";
+                    Response.Data = null!;
+                    return Response;
+               }
+          }
+
+          public async Task<ServiceModel<Product>> GetProductsAsync()
+          {
+               var Response = new ServiceModel<Product>();
                try
                {
-                    await _context.SaveChangesAsync();
-                    response.Success = true;
-                    response.Message = "Product updated succesful";
-                    response.Data = prod;
-                    return response;
-               }
-               catch (DbUpdateConcurrencyException)
-               {
-                    if (!ProductExists(id))
+                    var products = await appDbContext.Product.ToListAsync();
+                    if (products != null)
                     {
-                         response.Success = false;
-                         response.Message = "Product doesn't exist!!!";
-                         response.Data = null!;
-                         return response;
+                         Response.MultipleData = products;
+                         Response.Success = true;
+                         Response.Message = "Products found!";
+                         Response.CssClass = "success";
+                         return Response;
                     }
+                    else
+                    {
+                         Response.Success = false;
+                         Response.Message = "Sorry No products found!";
+                         Response.CssClass = "info";
+                         Response.Data = null!;
+                         return Response;
+                    }
+
+               }
+               catch (Exception exMessage)
+               {
+                    Response.CssClass = "danger";
+                    Response.Message = exMessage.Message.ToString();
+                    return Response;
+               }
+          }
+
+          public async Task<ServiceModel<Product>> UpdateProductAsync(Product NewProduct)
+          {
+               var response = new ServiceModel<Product>();
+               if (NewProduct != null)
+               {
+                    var product = await GetProductAsync(NewProduct.Id);
+                    if (product.Data != null)
+                    {
+                         product.Data.Title = NewProduct.Title;
+                         product.Data.Price = NewProduct.Price;
+                         product.Data.NewPrice = NewProduct.NewPrice;
+                         product.Data.Description = NewProduct.Description;
+                         product.Data.Quantity = NewProduct.Quantity;
+                         product.Data.ImageUrl = NewProduct.ImageUrl;
+                         await appDbContext.SaveChangesAsync();
+                         response.Message = "Product updated successfully !";
+                         response.Success = true;
+                         response.CssClass = "success fw-bold";
+                         response.Data  = product.Data;
+                    }
+                    else
+                    {
+                         response.Message = "Sorry product not found";
+                         response.Success = false;
+                         response.CssClass = "danger fw-bold";
+                    }
+               }
+               else
+               {
+                    response.Message = "Sorry product object is empty";
+                    response.Success = false;
+                    response.CssClass = "danger fw-bold";
                }
                return response;
           }
