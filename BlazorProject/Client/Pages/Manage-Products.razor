@@ -17,28 +17,28 @@
                 <div class="card border-1 m-2 mb-2">
                     <a href="productDetails/@product.Id" style="text-decoration:none;">
                         <div class="card-header text-center">
-                            <img class="card-img-top" src="@product.ImageUrl" style="width:200px; height:150px" />
+                            <img class="card-img-top" src="@product.ImageUrl" style="width:200px; height:210px" />
                             @if (DateTime.Now < product.UploadedDate.AddDays(30))
                             {
-                                <span class="badge bg-info position-absolute top-0 start-100 translate-middle badge rounded-pill">New</span>
+                                <span class="badge bg- position-absolute top-0 start-100 translate-middle badge rounded-pill">New</span>
                             }
                         </div>
                         <div class="card-body">
                             <p>
-                                <span class="text-primary">@product.Title </span>&nbsp; &nbsp;
+                                <span class="text-black">@product.Title </span>&nbsp; &nbsp;
                                 <br />
-                                <span class="text-secondary text-muted fs-6">@product.Description</span><br>
+                                
                                 @if (product.NewPrice != 0 && product.NewPrice < product.Price)
                                 {
-                                    <span class="text-danger text-decoration-line-through" style="font-size:16px;"><i>Gh¢@product.Price</i></span>
+                                    <span class="text-black text-decoration-line-through" style="font-size:16px;"><i>MDL @product.Price</i></span>
                                     <span>&nbsp; &nbsp;</span>
                                     <span class="badge bg-primary badge rounded-end bg-danger">Reduced</span>
                                     <br />
-                                    <span class="text-primary text-center" style="font-size:16px;"><i>Gh¢@product.NewPrice</i></span>
+                                    <span class="text-danger text-center" style="font-size:16px;"><i>Mdl @product.NewPrice</i></span>
                                 }
                                 else
                                 {
-                                    <span class="text-danger" style="font-size:16px;"><i>Gh¢@product.Price</i></span>
+                                    <span class="text-primary" style="font-size:16px;"><i>MDL @product.Price</i></span>
                                 }
 
                             </p>

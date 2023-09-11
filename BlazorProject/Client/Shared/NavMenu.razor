@@ -1,11 +1,17 @@
-﻿
+﻿@page "/your-page-url"
 @using BlazorProject.Shared
-
 @inject ICategoryService categoryService
+
+<style>
+     /* Add this CSS to change submenu background color */
+     .submenu-background {
+          background-color: #your-color; /* Replace with the desired background color */
+     }
+</style>
 
 <div class="top-row ps-3 navbar navbar-dark">
      <div class="container-fluid">
-          <a class="navbar-brand" href="">CATA's Magaz'</a>
+          <a class="navbar-brand" href="">CATA'S SHOP'</a>
           <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
                <span class="navbar-toggler-icon"></span>
           </button>
@@ -18,64 +24,85 @@
                     <span class="oi oi-home" aria-hidden="true"></span> Home
                </NavLink>
           </div>
-          <div class="text-light">Administration</div>
           <div class="nav-item px-3">
-               <a class="nav-link" @onclick="ToggleManageProductsDropdown">
-                    <span class="oi oi-terminal" aria-hidden="true"></span> Manage Products
+               <a class="nav-link" @onclick="ToggleAdministrationDropdown">
+                    <span class="oi oi-person" aria-hidden="true"></span> Administration
+                    <span class="oi oi-chevron-bottom float-end" style="font-size: 0.8rem;"></span>
                </a>
-               <ul class="nav flex-column">
+               <ul class="nav flex-column" style="display: @(administrationDropdownVisible ? "block" : "none")">
                     <li class="nav-item px-4">
-                         <NavLink class="nav-link" href="addProduct" Match="NavLinkMatch.All">
-                              <span class="oi oi-plus p-1" aria-hidden="true"></span> Add Product
-                         </NavLink>
+                         <a class="nav-link" @onclick="ToggleManageProductsDropdown">
+                              <span class="oi oi-spreadsheet" aria-hidden="true"></span> Products
+                              <span class="oi oi-chevron-right float-end" style="font-size: 0.8rem;"></span>
+                         </a>
+                         <ul class="nav flex-column submenu-background" style="display: @(manageProductsDropdownVisible ? "block" : "none")">
+                              <li class="nav-item px-2">
+                                   <NavLink class="nav-link" href="addProduct" Match="NavLinkMatch.All">
+                                        <span class="oi oi-tag" aria-hidden="true"></span> Add Products
+                                   </NavLink>
+                              </li>
+                              <li class="nav-item px-2">
+                                   <NavLink class="nav-link" href="manage-products" Match="NavLinkMatch.All">
+                                        <span class="oi oi-arrow-circle-top p-1" aria-hidden="true"></span> Update/Delete
+                                   </NavLink>
+                              </li>
+                         </ul>
                     </li>
                     <li class="nav-item px-4">
-                         <NavLink class="nav-link" href="manage-products" Match="NavLinkMatch.All">
-                              <span class="oi oi-arrow-circle-top p-1" aria-hidden="true"></span> Update/Delete
-                         </NavLink>
+                         <a class="nav-link" @onclick="ToggleManageCategoriesDropdown">
+                              <span class="oi oi-tag" aria-hidden="true"></span> Categories
+                              <span class="oi oi-chevron-right float-end" style="font-size: 0.8rem;"></span>
+                         </a>
+                         <ul class="nav flex-column submenu-background" style="display: @(manageCategoriesDropdownVisible ? "block" : "none")">
+                              <li class="nav-item px-2">
+                                   <NavLink class="nav-link" href="add-category" Match="NavLinkMatch.All">
+                                        <span class="oi oi-tag" aria-hidden="true"></span> Add Category
+                                   </NavLink>
+                              </li>
+                              <li class="nav-item px-2">
+                                   <NavLink class="nav-link" href="manage-categories" Match="NavLinkMatch.All">
+                                        <span class="oi oi-arrow-circle-top p-1" aria-hidden="true"></span> Update/Delete
+                                   </NavLink>
+                              </li>
+                         </ul>
                     </li>
                </ul>
           </div>
           <div class="nav-item px-3">
-               <a class="nav-link" @onclick="ToggleManageCategoriesDropdown">
-                    <span class="oi oi-terminal" aria-hidden="false"></span> Manage Categories
+               <a class="nav-link" @onclick="ToggleCategoryDropdown">
+                    <span class="oi oi-folder" aria-hidden="true"></span> Categories <!-- Category dropdown toggle -->
+                    <span class="oi oi-chevron-bottom float-end" style="font-size: 0.8rem;"></span>
                </a>
-               <ul class="nav flex-column">
-                    <li class="nav-item px-4">
-                         <NavLink class="nav-link" href="add-category" Match="NavLinkMatch.All">
-                              <span class="oi oi-plus p-1" aria-hidden="true"></span> Add Category
-                         </NavLink>
-                    </li>
-                    <li class="nav-item px-4">
-                         <NavLink class="nav-link" href="manage-categories" Match="NavLinkMatch.All">
-                              <span class="oi oi-arrow-circle-top p-1" aria-hidden="true"></span> Update/Delete
-                         </NavLink>
-                    </li>
-               </ul>
-          </div>
-          <div class="text-light">Categories</div>
-          <div class="nav-item px-3">
-               @if (serviceModel.MultipleData != null)
-               {
-                    foreach (var cat in serviceModel.MultipleData)
+               <ul class="nav flex-column" style="display: @(categoryDropdownVisible ? "block" : "none")">
+                    <!-- Populate categories here -->
+                    @if (serviceModel.MultipleData != null)
                     {
-                         <NavLink class="nav-link" href="@cat.Url" Match="NavLinkMatch.All">
-                              <span class="bi bi-@cat.Url" aria-hidden="true"></span> @cat.Name
-                         </NavLink>
+                         foreach (var cat in serviceModel.MultipleData)
+                         {
+                              <li class="nav-item px-2">
+                                   <NavLink class="nav-link" href="@cat.Url" Match="NavLinkMatch.All">
+                                        <span class="oi oi-check" aria-hidden="true"></span> @cat.Name
+                                   </NavLink>
+                              </li>
+                         }
                     }
-               }
-               else
-               {
-                    <div class="row"><div class="badge"> Loading...</div> </div>
-               }
+                    else
+                    {
+                         <li class="nav-item px-2">
+                              <div class="row"><div class="badge"> Loading...</div> </div>
+                         </li>
+                    }
+               </ul>
           </div>
      </nav>
 </div>
 
 @code {
      private bool collapseNavMenu = true;
+     private bool administrationDropdownVisible = false;
      private bool manageProductsDropdownVisible = false;
      private bool manageCategoriesDropdownVisible = false;
+     private bool categoryDropdownVisible = false; // Add a flag for the category dropdown
      ServiceModel<Category> serviceModel = new ServiceModel<Category>();
 
      private string NavMenuCssClass => collapseNavMenu ? "collapse" : "";
@@ -83,6 +110,11 @@
      private void ToggleNavMenu()
      {
           collapseNavMenu = !collapseNavMenu;
+     }
+
+     private void ToggleAdministrationDropdown()
+     {
+          administrationDropdownVisible = !administrationDropdownVisible;
      }
 
      private void ToggleManageProductsDropdown()
@@ -93,6 +125,11 @@
      private void ToggleManageCategoriesDropdown()
      {
           manageCategoriesDropdownVisible = !manageCategoriesDropdownVisible;
+     }
+
+     private void ToggleCategoryDropdown()
+     {
+          categoryDropdownVisible = !categoryDropdownVisible; // Toggle the category dropdown
      }
 
      protected override async Task OnInitializedAsync()

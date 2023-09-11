@@ -26,19 +26,19 @@
                         </div>
                         <div class="card-body">
                             <p>
-                                <span class="text-primary">@product.Title </span>&nbsp; &nbsp;
+                                <span class="text-black">@product.Title </span>&nbsp; &nbsp;
                                 <br />
                                 @if (product.NewPrice != 0 && product.NewPrice < product.Price)
                                 {
-                                    <span class="text-danger text-decoration-line-through" style="font-size:16px;"><i>MDL @product.Price</i></span>
+                                    <span class="text-black text-decoration-line-through" style="font-size:16px;"><i>MDL @product.Price</i></span>
                                     <span>&nbsp; &nbsp;</span>
                                     <span class="badge bg-primary badge rounded-end bg-danger">Reduced</span>
                                     <br />
-                                    <span class="text-primary text-center" style="font-size:16px;"><i>MDL @product.NewPrice</i></span>
+                                    <span class="text-danger text-center" style="font-size:16px;"><i>MDL @product.NewPrice</i></span>
                                 }
                                 else
                                 {
-                                    <span class="text-danger" style="font-size:16px;"><i>MDL @product.Price</i></span>
+                                    <span class="text-primary" style="font-size:16px;"><i>MDL @product.Price</i></span>
                                 }
 
                             </p>
