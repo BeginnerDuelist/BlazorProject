@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using BlazorProject.Shared;
-using BlazorProject.Server.DTO.Product_DTO;
+
 
 namespace BlazorProject.Server.Controllers
 {

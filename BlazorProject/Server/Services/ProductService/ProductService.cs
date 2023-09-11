@@ -1,6 +1,4 @@
-﻿
-using BlazorProject.Server.DTO.Product_DTO;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using System.Security.Policy;
 
 namespace BlazorProject.Server.Services.ProductService
