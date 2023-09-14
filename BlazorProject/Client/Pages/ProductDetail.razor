@@ -1,6 +1,7 @@
 ﻿﻿
 @page "/productDetails/{id:int}"
 @inject IProductService productService
+@inject ICartService cartService
 
 @if (serviceModel.Data != null)
 {
@@ -80,13 +81,18 @@ else
 
     private async Task GetProducts() => serviceModel = await productService.GetProduct(Id);
 
-    private async Task AddProductToCart(int ProductId)
+    private async Task AddProductToCart(int Id)
     {
         Message = "";
         CssClass = "";
         if (Quantity >= 1 && Quantity <= serviceModel.Data!.Quantity)
         {
-
+               var myCartModel = new MyCartModel
+               {
+                         ProductId = Id,
+                         UserQuantity = Quantity
+               };
+               await cartService.AddToCart(myCartModel);
         }
         else
         {
