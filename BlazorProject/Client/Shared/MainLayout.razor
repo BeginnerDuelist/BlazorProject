@@ -2,7 +2,7 @@
 @inject ILocalStorageService LocalStorage
 @inject AuthenticationStateProvider AuthenticationStateProvider
 @inject NavigationManager NavigationManager
-
+@inject ICartService cartService
 <div class="page">
     <div class="sidebar">
         <NavMenu />
@@ -33,6 +33,7 @@
     {
         await LocalStorage.RemoveItemAsync("authToken");
         await AuthenticationStateProvider.GetAuthenticationStateAsync();
+        await cartService.RemoveAllCartItems();
         NavigationManager.NavigateTo("");
     }
 }
