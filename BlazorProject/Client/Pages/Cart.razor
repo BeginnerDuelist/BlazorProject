@@ -1,11 +1,12 @@
 ﻿﻿
 @page "/cart"
 
-
 @using BlazorProject.Client.Services.CartService
+@using Microsoft.AspNetCore.Authorization;
 @inject ICartService cartService
 @inject NavigationManager navigationManager
 @inject IJSRuntime JS
+@attribute [Authorize]
 <div class="row">
     <div class="col-md-12">
         <div class="card">
