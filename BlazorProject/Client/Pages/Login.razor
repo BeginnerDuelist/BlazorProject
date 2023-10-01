@@ -1,5 +1,4 @@
-﻿﻿
-@page "/login"
+﻿@page "/login"
 
 @using Blazored.LocalStorage;
 @using Microsoft.AspNetCore.WebUtilities
@@ -8,27 +7,37 @@
 @inject NavigationManager NavigationManager
 @inject AuthenticationStateProvider AuthenticationStateProvider
 
-
 <PageTitle>Login</PageTitle>
 
-<h3>Login</h3>
-
-<EditForm Model="user" OnValidSubmit="HandleLogin">
-    <DataAnnotationsValidator />
-    <div class="mb-3">
-        <label for="email">Email</label>
-        <InputText id="email" @bind-Value="user.Email" class="form-control" />
-        <ValidationMessage For="@(() => user.Email)" />
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card mt-5">
+                <div class="card-header">
+                    <h3 class="card-title">Login</h3>
+                </div>
+                <div class="card-body">
+                    <EditForm Model="user" OnValidSubmit="HandleLogin">
+                        <DataAnnotationsValidator />
+                        <div class="mb-3">
+                            <label for="email" class="form-label">Email</label>
+                            <InputText id="email" @bind-Value="user.Email" class="form-control" />
+                            <ValidationMessage For="@(() => user.Email)" />
+                        </div>
+                        <div class="mb-3">
+                            <label for="password" class="form-label">Password</label>
+                            <InputText id="password" @bind-Value="user.Password" class="form-control" type="password" />
+                            <ValidationMessage For="@(() => user.Password)" />
+                        </div>
+                        <button type="submit" class="btn btn-primary">Login</button>
+                    </EditForm>
+                    <div class="text-danger mt-3">
+                        <span>@errorMessage</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="password">Password</label>
-        <InputText id="password" @bind-Value="user.Password" class="form-control" type="password" />
-        <ValidationMessage For="@(() => user.Password)" />
-    </div>
-    <button type="submit" class="btn btn-primary">Login</button>
-</EditForm>
-<div class="text-danger">
-    <span>@errorMessage</span>
 </div>
 
 @code {
