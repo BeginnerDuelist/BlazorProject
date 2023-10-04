@@ -2,6 +2,7 @@
 @page "/manage-categories"
 
 @using BlazorProject.Shared;
+@attribute [Authorize(Roles = "admin")]
 @inject ICategoryService categoryService
 @inject IJSRuntime JS
 @inject NavigationManager navigationManager

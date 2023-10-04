@@ -79,7 +79,6 @@ namespace BlazorProject.Client.Services.CartService
                 var CartModel = new List<CartModel>();
                 if (await authService.IsUserAuthenticated())
                 {
-                    
                     var MyCart = await localStorageService.GetItemAsync<List<MyCartModel>>("MyCart");
                     if (MyCart != null)
                     {
@@ -104,7 +103,7 @@ namespace BlazorProject.Client.Services.CartService
 
                         }
                     }
-                    
+
                 }
                 else
                 {

@@ -2,7 +2,7 @@
 @page "/update-product/{id:int}"
 @using BlazorProject.Shared;
 @inject IProductService productService
-
+@attribute [Authorize(Roles = "admin")]
 <div class="row">
     <div class="col-md-6 offset-3">
         <h3>Update Product</h3>

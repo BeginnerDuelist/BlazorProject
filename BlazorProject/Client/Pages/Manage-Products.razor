@@ -1,6 +1,7 @@
 ﻿﻿
 @page "/manage-products"
 @using BlazorProject.Shared;
+@attribute [Authorize(Roles = "admin")]
 @inject IProductService productService
 @inject IJSRuntime JS
 @inject NavigationManager navigationManager
@@ -23,7 +24,7 @@
                                 <span class="badge bg- position-absolute top-0 start-100 translate-middle badge rounded-pill">New</span>
                             }
                         </div>
-                        <div class="card-body">
+                        <div class="card-body custom-card-body">
                             <p>
                                 <span class="text-black">@product.Title </span>&nbsp; &nbsp;
                                 <br />
@@ -73,12 +74,11 @@ else
         </div>
     </div>
 }
-
-
-
-
-
-
+<style>
+    .custom-card-body {
+        height: 20vh;
+    }
+</style>
 
 @code {
     string Message = string.Empty;

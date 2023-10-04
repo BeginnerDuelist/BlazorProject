@@ -1,5 +1,6 @@
 ﻿@page "/add-category"
 @inject ICategoryService categoryService
+@attribute [Authorize(Roles ="admin")]
 <div class="row">
      <div class="col-md-8 offset-3">
           <div class="card">
