@@ -37,46 +37,41 @@
             background-color: hsla(0, 0%, 100%, 0.9) !important;
             backdrop-filter: saturate(200%) blur(25px);
         }
+
+        .centered-form {
+            margin: 0 auto;
+            max-width: 400px; /* Adjust the maximum width as needed */
+        }
     </style>
 
     <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
         <div class="row gx-lg-5 align-items-center mb-5">
-            <div class="col-lg-6 mb-5 mb-lg-0" style="z-index: 10">
-                <h1 class="my-5 display-5 fw-bold ls-tight" style="color: hsl(218, 81%, 95%)">
-                    The best offer <br />
-                    <span style="color: hsl(218, 81%, 75%)">for your business</span>
-                </h1>
-                <p class="mb-4 opacity-70" style="color: hsl(218, 81%, 85%)">
-                    Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-                    Temporibus, expedita iusto veniam atque, magni tempora mollitia
-                    dolorum consequatur nulla, neque debitis eos reprehenderit quasi
-                    ab ipsum nisi dolorem modi. Quos?
-                </p>
-            </div>
-
-            <div class="col-lg-6 mb-5 mb-lg-0 position-relative">
+            <!-- Remove the left text column -->
+            <div class="col-lg-12 position-relative">
                 <div id="radius-shape-1" class="position-absolute rounded-circle shadow-5-strong"></div>
                 <div id="radius-shape-2" class="position-absolute shadow-5-strong"></div>
 
-                <div class="card bg-glass">
+                <div class="card bg-glass centered-form">
                     <div class="card-body px-4 py-5 px-md-5">
-                        <EditForm Model="user" OnValidSubmit="HandleLogin">
-                            <DataAnnotationsValidator />
+                        <EditForm Model="user" OnValidSubmit="HandleLogin" class="centered-form">
+                            <!-- Add centered-form class to center the form -->
                             <!-- Email input -->
                             <div class="form-outline mb-4">
-                                <InputText id="form3Example3" @bind-Value="user.Email" class="form-control" />
-                                <label class="form-label" for="form3Example3">Email address</label>
+                                <label for="email">Email</label>
+                                <InputText id="email" @bind-Value="user.Email" class="form-control" />
+                                <ValidationMessage For="@(() => user.Email)" />
                             </div>
 
                             <!-- Password input -->
                             <div class="form-outline mb-4">
-                                <InputText id="form3Example4" @bind-Value="user.Password" class="form-control" type="password" />
-                                <label class="form-label" for="form3Example4">Password</label>
+                                <label for="password">Password</label>
+                                <InputText id="password" @bind-Value="user.Password" class="form-control" type="password" />
+                                <ValidationMessage For="@(() => user.Password)" />
                             </div>
-
+                          
                             <!-- Submit button -->
                             <button type="submit" class="btn btn-primary btn-block mb-4">
-                                Log in  
+                                Sign up
                             </button>
                             <div class="text-danger mt-3">
                                 <span>@errorMessage</span>
@@ -88,7 +83,6 @@
         </div>
     </div>
 </section>
-
 
 @code {
     private UserLogin user = new UserLogin();
