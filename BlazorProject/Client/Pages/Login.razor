@@ -44,7 +44,7 @@
         }
     </style>
 
-    <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5">
+    <div class="container px-4 py-5 px-md-5 text-center text-lg-start my-5" style="height: 78.5vh">
         <div class="row gx-lg-5 align-items-center mb-5">
             <!-- Remove the left text column -->
             <div class="col-lg-12 position-relative">
@@ -56,9 +56,9 @@
                         <EditForm Model="user" OnValidSubmit="HandleLogin" class="centered-form">
                             <!-- Add centered-form class to center the form -->
                             <!-- Email input -->
-                            <div class="form-outline mb-4">
+                            <div class="form-outline mb-4 ">
                                 <label for="email">Email</label>
-                                <InputText id="email" @bind-Value="user.Email" class="form-control" />
+                                <InputText id="email" @bind-Value="user.Email" class="form-control"/>
                                 <ValidationMessage For="@(() => user.Email)" />
                             </div>
 

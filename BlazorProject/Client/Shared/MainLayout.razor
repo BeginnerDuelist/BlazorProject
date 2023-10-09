@@ -4,15 +4,15 @@
 @inject NavigationManager NavigationManager
 @inject ICartService cartService
 <div class="page">
-    <div class="sidebar"> 
-       <NavMenu/>
+    <div class="sidebar">
+        <NavMenu/>
     </div>
 
     <main>
         <div class="top-row px-4">
             <AuthorizeView>
                 <Authorized>
-                    <p>Welcome @context.User.Identity.Name</p>
+                    <h6>Welcome @context.User.Identity.Name</h6>
                     <a href="/cart">Cart</a>
                     <a @onclick="Logout">Logout</a>
                 </Authorized>
@@ -21,11 +21,8 @@
             <a href="/login">Login</a>
              </NotAuthorized>
              </AuthorizeView>
-        </div>
-
-        <article class="content px-4">
+        </div>  
             @Body
-        </article>
     </main>
 </div>
 @code{
