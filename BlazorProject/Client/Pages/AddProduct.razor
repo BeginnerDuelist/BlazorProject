@@ -1,91 +1,119 @@
-﻿﻿
-@page "/addProduct"
+﻿@page "/addProduct"
 
-
-@using BlazorProject.Shared;
+@using BlazorProject.Shared
 @attribute [Authorize(Roles = "admin")]
 @inject IProductService productService
 @inject ICategoryService categoryService
 @inject IJSRuntime jSRuntime
-<div class="row">
-    <div class="col-md-6 offset-3">
-        <h3>Add Product</h3>
 
-        <EditForm Model="@newProduct" OnValidSubmit="HandleAddProduct">
-            <DataAnnotationsValidator></DataAnnotationsValidator>
-            <ValidationSummary class="form-control p-3"></ValidationSummary>
-            <div class="form-group mt-2">
-                <div class="alert alert-@CssClass">@Message</div>
-            </div>
-            <div class="form-group mt-2">
-                <label class="form-label" for="title">Name</label>
-                <InputText id="title" @bind-Value="newProduct.Title" class="form-control"></InputText>
-                <ValidationMessage For="@(()=> newProduct.Title)"></ValidationMessage>
-            </div>
-               <div class="form-group mt-2">
-                    <label class="form-label" for="price">Original Price</label>
-                    <input type="text" id="price" min="0.5" @bind="newProduct.Price" class="form-control"></input>
-                    <ValidationMessage For="@(()=> newProduct.Price)"></ValidationMessage>
-               </div>
-               <div class="form-group mt-2">
-                    <label class="form-label" for="newprice">New Price</label>
-                    <input type="text" id="newprice" min="0.5" @bind="newProduct.NewPrice" class="form-control"></input>
-                    <ValidationMessage For="@(()=> newProduct.NewPrice)"></ValidationMessage>
-               </div>
+<section class="vh-100 gradient-custom d-flex justify-content-center align-items-center">
+    <div class="container py-5 h-100">
+        <div class="row d-flex justify-content-center align-items-center h-100">
+            <div class="col-12 col-md-8 col-lg-6 col-xl-5">
+                <div class="card bg-dark text-white " style="border-radius: 1rem;width:700px;height:100vh;max-height: 650px;">
+                    <div class="card-body p-2 text-center">
 
-            <div class="form-group mt-2">
-                <label class="form-label" for="description">Description</label>
-                <InputTextArea id="description" @bind-Value="newProduct.Description" class="form-control"></InputTextArea>
-                <ValidationMessage For="@(()=> newProduct.Description)"></ValidationMessage>
+                        <div class="mt-md-4 pb-5">
+
+                            <h2 class="fw-bold mb-2 text-uppercase">Add Product</h2>
+                            <p class="text-white-50 mb-5">Please fill in the product details!</p>
+
+                            <EditForm Model="@newProduct" OnValidSubmit="HandleAddProduct">
+                                <DataAnnotationsValidator></DataAnnotationsValidator>
+                                <ValidationSummary class="form-control p-3"></ValidationSummary>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mt-2">
+                                            <label class="form-label" for="title">Name</label>
+                                            <InputText id="title" @bind-Value="newProduct.Title" class="form-control"></InputText>
+                                            
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <label class="form-label" for="price">Original Price</label>
+                                            <input type="text" id="price" min="0.5" @bind="newProduct.Price" class="form-control"></input>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mt-2">
+                                            <label class="form-label" for="newprice">New Price</label>
+                                            <input type="text" id="newprice" min="0.5" @bind="newProduct.NewPrice" class="form-control"></input>
+                                        </div>
+                                        <div class="form-group mt-2">
+                                            <label class="form-label" for="image">Image</label>&nbsp; <span class="text-danger fw-bold">@uploadMessage</span>
+                                            <InputFile id="image" OnChange="OnFileChange" class="form-control"></InputFile>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group mt-2">
+                                            <label class="form-label" for="quantity">Quantity</label>
+                                            <input type="number" id="quantity" min="1" @bind="newProduct.Quantity" class="form-control"></input>
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group mt-2">
+                                            <label class="form-label" for="categoryId">Category</label>
+                                            <select id="categoryId" @bind="newProduct.CategoryId" class="form-control">
+                                                <option value="">Select a category</option>
+                                                @foreach (var category in categories)
+                                                {
+                                                    <option value="@category.Id">@category.Name</option>
+                                                }
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group mt-2">
+                                    <label class="form-label" for="description">Description</label>
+                                    <InputTextArea id="description" @bind-Value="newProduct.Description" class="form-control"></InputTextArea>
+                                </div>
+                                <div class="form-check mt-3">
+                                    <button type="submit" class="btn btn-primary"> <i class="oi oi-plus"></i> Create</button>
+                                    <button type="submit" class="btn btn-info" @onclick="ResetForm"> <i class="oi oi-reset"></i> Reset</button>
+                                </div>
+                                <div class="form-group mt-4">
+                                    <div class="alert alert-@CssClass">@Message</div>
+                                </div>
+                            </EditForm>
+
+                        </div>
+
+                    </div>
+                </div>
             </div>
-            <div class="form-group mt-2">
-                <label class="form-label" for="description">Quantity</label>
-                <input type="number" id="quantity" min="1" @bind="newProduct.Quantity"  class="form-control"></input>
-                <ValidationMessage For="@(()=> newProduct.Quantity)"></ValidationMessage>
-            </div>
-               <div class="form-group mt-2">
-                    <label class="form-label" for="categoryId">Category</label>
-                    <select id="categoryId" @bind="newProduct.CategoryId" class="form-control">
-                         <option value="">Select a category</option>
-                         @foreach (var category in categories)
-                         {
-                              <option value="@category.Id">@category.Name</option>
-                         }
-                    </select>
-                    <ValidationMessage For="@(()=> newProduct.CategoryId)"></ValidationMessage>
-               </div>
-            <div class="form-group mt-2">
-                <label class="form-label" for="image">Image</label>&nbsp; <span class="text-danger fw-bold">@uploadMessage</span>
-                <InputFile id="image" OnChange="OnFileChange" class="form-control"></InputFile>
-                <ValidationMessage For="@(()=> newProduct.ImageUrl)"></ValidationMessage>
-            </div>
-            <div class="form-check mt-2">
-                <button type="submit" class="btn btn-primary"> <i class="oi oi-plus"></i> Create</button>
-                <button type="submit" class="btn btn-info" @onclick="ResetForm"> <i class="oi oi-reset"></i> Reset</button>
-            </div>
-        </EditForm>
+        </div>
     </div>
-</div>
+</section>
+<style>
+    .gradient-custom {
+        background-image: url('https://images.unsplash.com/photo-1526738549149-8e07eca6c147?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1925&q=80');
+        height:100vh;
+    }
+</style>
 
 
 @code {
-     public Product newProduct = new Product();
-     private List<Category> categories = new List<Category>();
-     private string? uploadMessage;
-     private string? Message = string.Empty;
-     private string? CssClass = string.Empty;
-     // Restul codului din componenta dvs.
-     protected override async Task OnInitializedAsync()
-     {
-          categories = (await categoryService.GetCategories()).MultipleData;
-     }
+    public Product newProduct = new Product();
+    private List<Category> categories = new List<Category>();
+    private string? uploadMessage;
+    private string? Message = string.Empty;
+    private string? CssClass = string.Empty;
+
+    protected override async Task OnInitializedAsync()
+    {
+        categories = (await categoryService.GetCategories()).MultipleData;
+    }
+
     async Task HandleAddProduct()
     {
         Message = "";
         var response = await productService.AddProduct(newProduct);
-            Message = response!.Message;
-            CssClass = response!.CssClass;    
+        Message = response!.Message;
+        CssClass = response!.CssClass;
     }
+
     private void ResetForm()
     {
         newProduct = new Product(); // Reset the product object to its initial state
@@ -97,7 +125,7 @@
     async Task OnFileChange(InputFileChangeEventArgs e)
     {
         FileInfo fileInfo = new FileInfo(e.File.Name);
-        if(fileInfo.Extension.ToLower().Contains(".jpg"))
+        if (fileInfo.Extension.ToLower().Contains(".jpg"))
         {
             uploadMessage = "";
             var format = "image/jpg";

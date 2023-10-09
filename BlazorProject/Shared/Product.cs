@@ -11,6 +11,7 @@ namespace BlazorProject.Shared
      {
           public int Id { get; set; }
           [StringLength(70, MinimumLength = 25)]
+        
           public string Title { get; set; }=string.Empty;
           public string Description { get; set; } = string.Empty;
           public string ImageUrl { get; set; } = string.Empty;
