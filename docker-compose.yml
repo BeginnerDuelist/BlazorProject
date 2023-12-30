@@ -9,14 +9,15 @@ services:
        ports:
           - "8080:80"
        environment:
-          ConnectionStrings_DefaultConnection: "Host=Asus123;Database=postgres;Username=postgres;Password=postgres"
+          ConnectionStrings_DefaultConnection: "Host=db;Database=postgres;Username=postgres;Password=postgres"
        depends_on:
               - db
   db:
        container_name: db
-       image: postgres:12
+       image: postgres:latest
        ports:
          - "5432:5432"
+       restart: always
        environment:
           POSTGRES_PASSWORD: postgres
           POSTGRES_USER: postgres
