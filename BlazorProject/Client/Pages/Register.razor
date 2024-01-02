@@ -53,6 +53,7 @@
                         <EditForm Model="user" OnValidSubmit="HandleRegistration" class="centered-form">
                             <!-- Add centered-form class to center the form -->
                             <!-- Email input -->
+                            <DataAnnotationsValidator/>
                             <div class="form-outline mb-4">
                                 <label for="email">Email</label>
                                 <InputText id="email" @bind-Value="user.Email" class="form-control" />
@@ -96,8 +97,12 @@
         var result = await AuthService.Register(user);
         message = result.Message;
         if (result.Success)
+        {
             messageCssClass = "text-success";
+        }
         else
+        {
             messageCssClass = "text-danger";
+        }
     }
 }
