@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace BlazorProject.Server.Migrations
 {
     [DbContext(typeof(BlazorProjectAPIDbContext))]
-    [Migration("20240102091524_Fixes")]
-    partial class Fixes
+    [Migration("20240119134731_First")]
+    partial class First
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

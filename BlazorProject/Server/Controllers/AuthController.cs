@@ -46,8 +46,13 @@ namespace BlazorProject.Server.Controllers
 
             return Ok(response);
         }
+        [HttpGet]
+        public async Task<int> GetTotalUsersCount()
+        {
+            return await _authService.GetTotalUsersCount();
+        }
 
-       
+
     }
 }
 

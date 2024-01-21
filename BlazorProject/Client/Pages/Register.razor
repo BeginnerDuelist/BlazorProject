@@ -1,6 +1,7 @@
 ﻿@page "/register"
 @inject IAuthService AuthService
-
+@inject NavigationManager NavigationManager
+@inject AuthenticationStateProvider AuthenticationStateProvider
 <PageTitle>Register</PageTitle>
 <!-- Section: Design Block -->
 <section class="background-radial-gradient overflow-hidden">
@@ -87,6 +88,18 @@
 </section>
 <!-- Section: Design Block -->
 @code {
+    private async Task CheckAuthenticationState()
+    {
+        if (await AuthService.IsUserAuthenticated())
+        {
+            // Utilizatorul este deja autentificat, redirecționează către o altă pagină
+            NavigationManager.NavigateTo("");
+        }
+    }
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckAuthenticationState();
+    }
     UserRegister user = new UserRegister();
 
     string message = string.Empty;

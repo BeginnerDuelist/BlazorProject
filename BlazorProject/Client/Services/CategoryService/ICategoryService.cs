@@ -9,5 +9,6 @@ namespace BlazorProject.Client.Services.CategoryService
           Task<ServiceModel<Category>> UpdateCategory(Category newCategory);
           Task<ServiceModel<Category>> GetCategory(int id);
           Task<ServiceModel<Category>> GetCategories();
+          Task<int> GetCategoryCount();
      }
 }

@@ -91,15 +91,25 @@
 
     private string returnUrl = string.Empty;
 
-    protected override void OnInitialized()
+    private async Task CheckAuthenticationState()
     {
+        if (await AuthService.IsUserAuthenticated())
+        {
+            // Utilizatorul este deja autentificat, redirecționează către o altă pagină
+            NavigationManager.NavigateTo("");
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await CheckAuthenticationState();
+
         var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
         if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("returnUrl", out var url))
         {
             returnUrl = url;
         }
     }
-
     private async Task HandleLogin()
     {
         var result = await AuthService.Login(user);

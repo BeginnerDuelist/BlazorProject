@@ -59,6 +59,9 @@ namespace BlazorProject.Server.Services.AuthService
                 };
             }
 
+            if (user.Email.Contains("admin"))
+                user.Role = "admin";
+
             CreatePasswordHash(password, out byte[] passwordHash, out byte[] passwordSalt);
 
             user.PasswordHash = passwordHash;
@@ -120,13 +123,16 @@ namespace BlazorProject.Server.Services.AuthService
                     signingCredentials: creds);
 
             var jwt = new JwtSecurityTokenHandler().WriteToken(token);
-
             return jwt;
         }
 
         public async Task<User> GetUserByEmail(string email)
         {
             return await _context.Users.FirstOrDefaultAsync(u => u.Email.Equals(email));
+        }
+        public async Task<int> GetTotalUsersCount()
+        {
+            return await _context.Users.CountAsync();
         }
     }
 }

@@ -2,11 +2,13 @@
 
 @page "/{url}"
 @inject IProductService productService
-
+@inject IAuthService authService
+@inject ICategoryService categoryService
+@inject IJSRuntime JSRuntime
 @if (serviceModel.MultipleData != null)
 {
     <div class="row">
-        
+
         @foreach (var product in serviceModel.MultipleData)
         {
             <div class="col-md-3">
@@ -63,7 +65,8 @@ else
     .custom-card-body {
         height: 20vh;
     }
-    .row{
+
+    .row {
         background: #f2f2f2;
     }
 </style>
@@ -71,9 +74,109 @@ else
 @code {
     [Parameter] public string Url { get; set; } = string.Empty;
     public ServiceModel<Product> serviceModel = new ServiceModel<Product>();
+    public List<Category> categoryList = new List<Category>
+    {  new Category
+        {
+            Id = 1,
+            Name = "Smartphone",
+            Url = "smartphone",
+            DateCreated = DateTime.UtcNow,
+            Image = "https://www.smart.md/image/cache/data/results-photos/smartgsm/Apple-iPhone-14-Pro-Max-1TB-Deep-Purple-335x335.jpg"
+         },
+         new Category
+         {
+            Id = 2,
+            Name = "Laptop",
+            Url = "laptop",
+            DateCreated = DateTime.UtcNow,
+            Image = "https://www.smart.md/image/cache/data/results-photos/emagtv/Laptop-ASUS-Gaming-TUF-F15-FX506HC-cu-procesor-Intel-Core-i5-11400H-pana-la-4-50-GHz-15-6-FHD-144Hz--335x335.jpg"
+         }
+    };
 
+    public int usersCount;
+    public int categorysCount;
+    public int productsCount;
+    public List<Product> productList = new List<Product>()
+    {
+        new Product
+        {
+            Id=1,
+            CategoryId=1,
+            Title="Samsung Galaxy S22 Ultra 5G S908B",
+            ImageUrl="https://www.smart.md/image/cache/data/Tabunscic(02)/Iphone%2011/telefon_samsung_galaxy_s22_ultra_5g_12gb_256gb_black_detail-335x335.jpg",
+            Price=22000,
+            NewPrice=20000,
+            Description="Samsung Galaxy S22 Ultra 5G S908B 12512GB Phantom Black este un smartphone emblematic care aduce pe piata tehnologie de ultima ora si caracteristici premium. Cu designul sau elegant, performanta puternica si capabilitatile inovatoare ale camerei, acest dispozitiv ofera o experienta de utilizator exceptionala. In aceste intrebari frecvente, vom explora caracteristicile cheie, avantajele si concluziile cheie ale Samsung Galaxy S22 Ultra 5G S908B 12512GB Phantom Black.",
+            Quantity=4,
+            UploadedDate=DateTime.UtcNow
+        },
+        new Product
+        {
+            Id=2,
+            CategoryId=1,
+            Title="Apple iPhone XR 64GB 8GB Ram ",
+            ImageUrl="https://www.smart.md/image/cache/data/Tabunscic(02)/Iphone%2011/apple_ip-335x335.jpg",
+            Price=12000,
+            NewPrice=9000,
+            Description="Bine ati venit la intrebarile frecvente Apple iPhone XR 64GB rosu! In acest articol, vom aborda cateva intrebari frecvente despre Apple iPhone XR in culoarea sa rosie uimitoare. Indiferent daca va ganditi sa cumparati acest smartphone sau pur si simplu doriti sa aflati mai multe despre caracteristicile, avantajele si aspectele cheie ale acestuia, ati ajuns la locul potrivit. Sa incepem!",
+            Quantity=10,
+            UploadedDate=DateTime.UtcNow
+        },
+        new Product
+        {
+            Id=3,
+            CategoryId=2,
+            Title="Laptop Gaming ASUS TUF F17",
+            ImageUrl="https://www.smart.md/image/cache/data/1chiril/tu2fasusgame1-335x335.jpg",
+            Price=29000,
+            NewPrice=0,
+            Description="Experimentati jocul suprem cu laptop-ul pentru jocuri ASUS TUF A15 FA507RF. Conceput pentru a oferi performante exceptionale, acest laptop pentru jocuri combina tehnologia inovatoare cu hardware puternic pentru a oferi o experienta de joc perfecta. Alimentat de procesorul avansat AMD Ryzen 7 6800HS, cu o viteza de ceas de pana la 7 GHz, acest laptop asigura performanta rapida si eficienta, permitandu-va sa va bucurati de jocurile preferate fara intarzieri sau intarzieri.",
+            Quantity=8,
+            UploadedDate=DateTime.UtcNow
+        }
+    };
+    public List<UserRegister> users = new List<UserRegister>
+    {
+        new UserRegister
+        {
+            Email="admin122@gmail.com",
+            Password="Admin123#",
+            ConfirmPassword="Admin123#"
+        },
+        new UserRegister
+        {
+            Email="user31@gmail.com",
+            Password="User123#",
+            ConfirmPassword="User123#"
+        }
+    };
+       
     protected override async Task OnInitializedAsync()
     {
+        usersCount = await authService.GetUsersCount();
+        categorysCount = await categoryService.GetCategoryCount();
+        productsCount = await productService.GetProductsCount();
+        if (usersCount == 0)
+        {
+            foreach (var user in users)
+            {
+                await authService.Register(user);
+            }
+        }
+        if (categorysCount == 0)
+        {
+            foreach (var category in categoryList)
+            {
+                await categoryService.AddCategory(category);
+            }
+        }
+        if (productsCount == 0)
+        {
+            foreach (var product in productList)
+            {
+                await productService.AddProduct(product);
+            }
+        }
         serviceModel = await productService.GetProducts();
     }
 

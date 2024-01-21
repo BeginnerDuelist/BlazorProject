@@ -1,5 +1,6 @@
 ﻿using BlazorProject.Shared;
 using System.Net.Http.Json;
+using static System.Net.WebRequestMethods;
 
 namespace BlazorProject.Client.Services.CategoryService
 {
@@ -10,8 +11,13 @@ namespace BlazorProject.Client.Services.CategoryService
           {
                this.httpClient = httpClient;
           }
-
-          public async Task<ServiceModel<Category>> AddCategory(Category newCategory)
+          public async Task<int> GetCategoryCount()
+          {
+            var response = await httpClient.GetAsync("api/Category/count");
+            var result = await response.Content.ReadFromJsonAsync<int>();
+            return result!;
+          }
+        public async Task<ServiceModel<Category>> AddCategory(Category newCategory)
           {
                var response = await httpClient.PostAsJsonAsync("api/Category", newCategory);
                var result = await response.Content.ReadFromJsonAsync<ServiceModel<Category>>();

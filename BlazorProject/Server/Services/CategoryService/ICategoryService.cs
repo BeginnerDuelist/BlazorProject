@@ -7,6 +7,8 @@
           Task<ServiceModel<Category>> AddCategoryAsync(Category newCategory);
           Task<ServiceModel<Category>> UpdateCategoryAsync(Category newCategory);
           Task<ServiceModel<Category>> DeleteCategoryAsync(int id);
-          
+          Task<int> GetTotalCategorysCount();
+
+
      }
 }

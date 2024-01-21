@@ -68,5 +68,10 @@ namespace BlazorProject.Client
 
             return claims;
         }
+        public bool IsUserAuthenticated()
+        {
+            var authenticationState = GetAuthenticationStateAsync().Result;
+            return authenticationState.User.Identity.IsAuthenticated;
+        }
     }
 }

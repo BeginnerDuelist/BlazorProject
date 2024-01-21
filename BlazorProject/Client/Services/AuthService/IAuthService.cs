@@ -7,5 +7,6 @@ namespace BlazorProject.Client.Services.AuthService
         Task<ServiceModel<int>> Register(UserRegister request);
         Task<ServiceModel<string>> Login(UserLogin request);
         Task<bool> IsUserAuthenticated();
+        Task<int> GetUsersCount();
     }
 }

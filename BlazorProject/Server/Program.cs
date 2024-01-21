@@ -7,6 +7,9 @@ using BlazorProject.Server.Services.CategoryService;
 using BlazorProject.Server.Services.AuthService;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
+using Microsoft.Extensions.Hosting;
+using Microsoft.EntityFrameworkCore.Storage;
+using BlazorProject.Server.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +18,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 builder.Services.AddDbContext<BlazorProjectAPIDbContext>(options =>
-    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaulConnection"))); 
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaulConnection")));
+
 
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ICategoryService,CategoryService>();
@@ -40,6 +44,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+DbService.MigrationApplicantion(app);
 app.UseSwaggerUI();
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
@@ -61,12 +66,12 @@ app.UseBlazorFrameworkFiles();
 app.UseStaticFiles();
 
 app.UseRouting();
-
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapRazorPages();
 app.MapControllers();
 app.MapFallbackToFile("index.html");
+
 
 app.Run();

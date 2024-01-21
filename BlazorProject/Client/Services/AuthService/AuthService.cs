@@ -1,5 +1,6 @@
 ﻿using BlazorProject.Shared;
 using Microsoft.AspNetCore.Components.Authorization;
+using System.Net.Http;
 using System.Net.Http.Json;
 
 namespace BlazorProject.Client.Services.AuthService
@@ -30,6 +31,12 @@ namespace BlazorProject.Client.Services.AuthService
         {
             var result = await _http.PostAsJsonAsync("api/auth/register", request);
             return await result.Content.ReadFromJsonAsync<ServiceModel<int>>();
+        }
+        public async Task<int> GetUsersCount()
+        {
+            var response = await _http.GetAsync("api/auth");
+            var result = await response.Content.ReadFromJsonAsync<int>();
+            return result!;
         }
     }
 }
